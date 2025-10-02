@@ -1,11 +1,14 @@
 # Backend Environment Variables
 PORT=5000
 NODE_ENV=development
+# DATABASE_URL="postgresql://postgres.hqbmmqtxjkwgvpfqzmrx:Asterwap1234@@aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DATABASE_URL=postgresql://postgres.twlftxgbffklgagcoipi:portfolioDB@aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres
+
 # DATABASE_URL="postgresql://postgres:admin@localhost:5432/portfolioDB?schema=public"
 
 
 # Recommended for most uses
-DATABASE_URL="postgresql://neondb_owner:npg_k2xwpX9baFyv@ep-odd-glitter-a1olj8lq-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+# DATABASE_URL="postgresql://neondb_owner:npg_k2xwpX9baFyv@ep-odd-glitter-a1olj8lq-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 
 
 SERVER_SECRET=access_secret
