@@ -1,8 +1,9 @@
 import { asyncHandler } from '../../utils/asyncHandler';
 import { Request, Response, NextFunction } from 'express';
 import { sendResponse } from '../../utils/sendResponse';
-import { prisma } from '../../lib/prisma';
+
 import { compare, hash } from 'bcryptjs';
+import prisma from '../../lib/prisma';
 
 const adminSignIn = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

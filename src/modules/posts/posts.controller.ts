@@ -1,7 +1,8 @@
 import { asyncHandler } from '../../utils/asyncHandler';
 import { Request, Response, NextFunction } from 'express';
 import { sendResponse } from '../../utils/sendResponse';
-import { prisma } from '../../lib/prisma';
+import prisma from '../../lib/prisma';
+
 
 const createPost = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
