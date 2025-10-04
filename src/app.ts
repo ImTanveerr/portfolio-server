@@ -9,7 +9,7 @@ export const app: Express = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('App is running succesfully!'));
+app.get('/', (req, res) => res.send('Portfolio backend running!'));
 app.use('/api', globalRouter);
 
 app.use(globalErrorHandler);

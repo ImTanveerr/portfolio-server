@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 5000;
 
 
 const startServer = async () => {
-  await seedAdmin(); // seed admin before starting the server
+  await seedAdmin(); 
 
   app.listen(PORT, () => console.log(`App running on port ${PORT}`));
 };

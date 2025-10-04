@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.globalRouter = void 0;
+const express_1 = require("express");
+const posts_routes_1 = require("./modules/posts/posts.routes");
+const user_routes_1 = require("./modules/user/user.routes");
+const posts_routes_2 = require("./modules/projects/posts.routes");
+exports.globalRouter = (0, express_1.Router)();
+exports.globalRouter.use('/posts', posts_routes_1.postsRouter);
+exports.globalRouter.use('/user', user_routes_1.userRouter);
+exports.globalRouter.use('/projects', posts_routes_2.projectsRouter);

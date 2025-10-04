@@ -3,6 +3,15 @@ import { Request, Response, NextFunction } from 'express';
 import { sendResponse } from '../../utils/sendResponse';
 import prisma from '../../lib/prisma';
 
+// Helper for server errors
+const handleServerError = (res: Response, error: any) => {
+  console.error(error);
+  sendResponse(res, {
+    data: null,
+    message: 'Something went wrong on the server',
+    statusCode: 500,
+  });
+};
 
 const createPost = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -11,55 +20,58 @@ const createPost = asyncHandler(
     if (!title || !description || !content) {
       sendResponse(res, {
         data: null,
-        message: 'Required Post Field(s) Missing',
+        message: 'Required post field(s) missing',
         statusCode: 400,
       });
       return;
     }
+
     try {
       const post = await prisma.posts.create({
         data: {
           title: String(title),
-          content: String(content),
           description: String(description),
-          thumbnailUrl: String(thumbnailUrl),
+          content: String(content),
+          thumbnailUrl: thumbnailUrl ? String(thumbnailUrl) : null,
         },
       });
+
       sendResponse(res, {
-        message: 'Post created succesfully!',
+        message: 'Post created successfully!',
         data: post,
         statusCode: 200,
       });
     } catch (error) {
-      sendResponse(res, {
-        data: null,
-        message: 'Something went wrong on the server',
-        statusCode: 500,
-      });
-      console.log(error);
+      handleServerError(res, error);
     }
   }
 );
 
 const getPostById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
+
     try {
-      const post = await prisma.posts.findFirst({
-        where: { id: Number(id) },
+      const post = await prisma.posts.findUnique({
+        where: { id },
       });
+
+      if (!post) {
+        sendResponse(res, {
+          data: null,
+          message: 'Post not found',
+          statusCode: 404,
+        });
+        return;
+      }
+
       sendResponse(res, {
-        message: 'Post fetched succesfully!',
+        message: 'Post fetched successfully!',
         data: post,
         statusCode: 200,
       });
     } catch (error) {
-      sendResponse(res, {
-        data: null,
-        message: 'Something went wrong on the server',
-        statusCode: 500,
-      });
-      console.log(error);
+      handleServerError(res, error);
     }
   }
 );
@@ -67,86 +79,73 @@ const getPostById = asyncHandler(
 const getAllPosts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const post = await prisma.posts.findMany({
+      const posts = await prisma.posts.findMany({
         orderBy: { createdAt: 'desc' },
       });
+
       sendResponse(res, {
-        message: 'All Post fetched succesfully!',
-        data: post,
+        message: 'All posts fetched successfully!',
+        data: posts,
         statusCode: 200,
       });
     } catch (error) {
-      sendResponse(res, {
-        data: null,
-        message: 'Something went wrong on the server',
-        statusCode: 500,
-      });
-      console.log(error);
+      handleServerError(res, error);
     }
   }
 );
 
 const deletePostById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-   
     try {
-      const updtedPost = await prisma.posts.delete({
-        where: { id: Number(id) },
+      const deletedPost = await prisma.posts.delete({
+        where: { id },
       });
+
       sendResponse(res, {
-        message: 'Post deleted succesfully!',
-        data: updtedPost,
+        message: 'Post deleted successfully!',
+        data: deletedPost,
         statusCode: 200,
       });
     } catch (error) {
-      sendResponse(res, {
-        data: null,
-        message: 'Something went wrong on the server',
-        statusCode: 500,
-      });
-      console.log(error);
+      handleServerError(res, error);
     }
   }
 );
+
 const modifyPostById = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { title, description, thumbnailUrl, content } = req.body;
-    const id = req.params.id;
+    const id = Number(req.params.id);
 
-    // if (!title || !description || !content) {
-    //   sendResponse(res, {
-    //     data: null,
-    //     message: 'Required Post Field(s) Missing',
-    //     statusCode: 400,
-    //   });
-    //   return;
-    // }
+    if (!title || !description || !content) {
+      sendResponse(res, {
+        data: null,
+        message: 'Required post field(s) missing',
+        statusCode: 400,
+      });
+      return;
+    }
+
     try {
-      const updtedPost = await prisma.posts.update({
-        where: {
-          id: Number(id),
-        },
+      const updatedPost = await prisma.posts.update({
+        where: { id },
         data: {
           title: String(title),
-          content: String(content),
           description: String(description),
-          thumbnailUrl: String(thumbnailUrl),
+          content: String(content),
+          thumbnailUrl: thumbnailUrl ? String(thumbnailUrl) : null,
         },
       });
+
       sendResponse(res, {
-        message: 'Post updated succesfully!',
-        data: updtedPost,
+        message: 'Post updated successfully!',
+        data: updatedPost,
         statusCode: 200,
       });
     } catch (error) {
-      sendResponse(res, {
-        data: null,
-        message: 'Something went wrong on the server',
-        statusCode: 500,
-      });
-      console.log(error);
+      handleServerError(res, error);
     }
   }
 );
